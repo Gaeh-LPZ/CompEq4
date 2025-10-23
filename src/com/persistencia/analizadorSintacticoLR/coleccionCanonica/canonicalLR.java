@@ -3,6 +3,7 @@ package com.persistencia.analizadorSintacticoLR.coleccionCanonica;
 import java.util.*;
 
 public class canonicalLR {
+
     // ---------- cerradura ----------
     public static Set<itemLR0> closure(grammar g, Set<itemLR0> I) {
         Set<itemLR0> C = new LinkedHashSet<>(I);
@@ -15,7 +16,10 @@ public class canonicalLR {
                 if (X != null && g.N.contains(X)) {
                     for (production p : g.byLeft.getOrDefault(X, Collections.emptyList())) {
                         itemLR0 cand = new itemLR0(p, 0);
-                        if (!C.contains(cand)) { C.add(cand); changed = true; }
+                        if (!C.contains(cand)) {
+                            C.add(cand);
+                            changed = true;
+                        }
                     }
                 }
             }
@@ -25,19 +29,31 @@ public class canonicalLR {
 
     // ---------- ir_a ----------
     public static Set<itemLR0> goTo(grammar g, Set<itemLR0> I, String X) {
+        if (grammar.EPS.equals(X)) {
+            return Collections.emptySet();
+        }
         Set<itemLR0> J = new LinkedHashSet<>();
         for (itemLR0 it : I) {
-            if (X.equals(it.symbolAfterDot())) J.add(it.advance());
+            if (X.equals(it.symbolAfterDot())) {
+                J.add(it.advance());
+            }
         }
         return closure(g, J);
     }
-        public static Set<itemLR0> go(grammar g, Set<itemLR0> I, String X) {
+
+    public static Set<itemLR0> go(grammar g, Set<itemLR0> I, String X) {
+        if (grammar.EPS.equals(X)) {
+            return Collections.emptySet();
+        }
         Set<itemLR0> J = new LinkedHashSet<>();
         for (itemLR0 it : I) {
-            if (X.equals(it.symbolAfterDot())) J.add(it.advance());
+            if (X.equals(it.symbolAfterDot())) {
+                J.add(it.advance());
+            }
         }
         return J;
     }
+
     // ---------- colección canónica----------
     public static List<Set<itemLR0>> canonicalCollection(grammar g) {
         production startProd = g.byLeft.get(g.startPrime).get(0);
@@ -54,15 +70,29 @@ public class canonicalLR {
                 Set<String> symbols = new LinkedHashSet<>();
                 for (itemLR0 it : I) {
                     String s = it.symbolAfterDot();
-                    if (s != null) symbols.add(s);
+                    if (s != null) {
+                        symbols.add(s);
+                    }
                 }
                 for (String X : symbols) {
-                    if ("$".equals(X)) continue; 
+                    if ("$".equals(X)) {
+                        continue;
+                    }
                     Set<itemLR0> J = goTo(g, I, X);
-                    if (J.isEmpty()) continue;
+                    if (J.isEmpty()) {
+                        continue;
+                    }
                     boolean exists = false;
-                    for (Set<itemLR0> K : C) if (K.equals(J)) { exists = true; break; }
-                    if (!exists) { C.add(J); changed = true; }
+                    for (Set<itemLR0> K : C) {
+                        if (K.equals(J)) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if (!exists) {
+                        C.add(J);
+                        changed = true;
+                    }
                 }
             }
         }
@@ -73,18 +103,34 @@ public class canonicalLR {
         LinkedHashSet<String> s = new LinkedHashSet<>();
         for (itemLR0 it : I) {
             String x = it.symbolAfterDot();
-            if (x != null) s.add(x);
+            if (x != null) {
+                s.add(x);
+            }
         }
         List<String> out = new ArrayList<>();
-        for (String A : g.N) if (s.contains(A)) out.add(A);
-        for (String a : g.T) if (s.contains(a)) out.add(a);
-        for (String x : s) if (!out.contains(x)) out.add(x);
+        for (String A : g.N) {
+            if (s.contains(A)) {
+                out.add(A);
+            }
+        }
+        for (String a : g.T) {
+            if (s.contains(a)) {
+                out.add(a);
+            }
+        }
+        for (String x : s) {
+            if (!out.contains(x)) {
+                out.add(x);
+            }
+        }
         return out;
     }
 
     private static String itemsAsSet(Set<itemLR0> S) {
         List<String> lines = new ArrayList<>();
-        for (itemLR0 it : S) lines.add(it.toString());
+        for (itemLR0 it : S) {
+            lines.add(it.toString());
+        }
         return "{" + String.join("|", lines) + "}";
     }
 
@@ -99,7 +145,9 @@ public class canonicalLR {
 
         // Mapa de índices
         Map<Set<itemLR0>, Integer> idx = new LinkedHashMap<>();
-        for (int i = 0; i < C.size(); i++) idx.put(C.get(i), i);
+        for (int i = 0; i < C.size(); i++) {
+            idx.put(C.get(i), i);
+        }
 
         // Por cada estado, listar Ir_a ordenado (N luego T)
         for (int i = 0; i < C.size(); i++) {
@@ -110,17 +158,27 @@ public class canonicalLR {
                 Set<itemLR0> J = goTo(g, I, X);
 
                 boolean isAccept = "$".equals(X);
-                out.append("Ir_a(I").append(i).append(", ").append(X).append(")=");
+                boolean isEpilon = grammar.EPS.equals(X);
 
-                if (isAccept) {
-                    out.append("Aceptación");
-                } else {
-                    out.append("cerradura(").append(itemsAsSet(go(g, I, X))).append(")= (").append(itemsAsSet(J)).append(")");
-                    Integer j = idx.get(J);
-                    if (j == null) {
-                        for (int k = 0; k < C.size(); k++) if (C.get(k).equals(J)) { j = k; break; }
+                if (!isEpilon) {
+                    out.append("Ir_a(I").append(i).append(", ").append(X).append(")=");
+                    if (isAccept) {
+                        out.append("Aceptación");
+                    } else {
+                        out.append("cerradura(").append(itemsAsSet(go(g, I, X))).append(")= (").append(itemsAsSet(J)).append(")");
+                        Integer j = idx.get(J);
+                        if (j == null) {
+                            for (int k = 0; k < C.size(); k++) {
+                                if (C.get(k).equals(J)) {
+                                    j = k;
+                                    break;
+                                }
+                            }
+                        }
+                        if (j != null) {
+                            out.append(" =I").append(j);
+                        }
                     }
-                    if (j != null) out.append(" =I").append(j);
                 }
                 out.append("\n");
             }
