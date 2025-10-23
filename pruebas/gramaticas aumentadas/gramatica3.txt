@@ -1,0 +1,10 @@
+D L T
+id , ; float int
+D'->D $
+D->T L ;
+L->id L
+L->, id L
+L->ε
+T->float
+T->int
+T->ε
