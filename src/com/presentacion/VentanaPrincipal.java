@@ -401,7 +401,7 @@ class DefaultDataProvider implements DataProvider {
 
     @Override
     public String getBannerImagePath() {
-        return "resources/compilador_banner";
+        return "src/com/presentacion/resources/compilador_banner";
     }
 
     @Override
