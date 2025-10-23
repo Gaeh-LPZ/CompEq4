@@ -1,3 +1,10 @@
+> [!IMPORTANT]
+> Compila y ejecuta con:
+> ```bash
+> javac -cp "lib/flatlaf-3.5.jar;src" src/com/presentacion/VentanaPrincipal.java -d bin
+> java -cp "bin;lib/flatlaf-3.5.jar" com.presentacion.VentanaPrincipal
+> ```   
+
 ## Getting Started
 
 Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.

@@ -1,6 +1,12 @@
 package com.presentacion;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.presentacion.analizadorLexico.AnalizadorLexicoPanel;
+import com.presentacion.analizadorSintacticoLR.AnalizadorLRPanel;
+import com.presentacion.coleccionCanonica.ColeccionCanonicaPanel;
+import com.presentacion.primerosSiguientes.PrimerosSiguientesPanel;
+import com.presentacion.tablaAnalisisSintacticoLR.TablaLRPanel;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -99,7 +105,7 @@ public class VentanaPrincipal extends JFrame {
         closeBtn.setBorder(BorderFactory.createEmptyBorder());
         closeBtn.setFocusable(false);
         closeBtn.setContentAreaFilled(false);
-        closeBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        closeBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); 
         closeBtn.setForeground(FG_LIGHT);
 
         closeBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -150,7 +156,7 @@ public class VentanaPrincipal extends JFrame {
                     openAnalyzerTab("Algoritmo Colección Canónica", new ColeccionCanonicaPanel());
                     break;
                 case "tabla_lr0":
-                    openAnalyzerTab("Tabla LR(0)", new TablaLR0Panel());
+                    openAnalyzerTab("Tabla LR(0)", new TablaLRPanel());
                     break;
                 case "analizador_sintactico":
                     openAnalyzerTab("Analizador Sintáctico LR", new AnalizadorLRPanel());
