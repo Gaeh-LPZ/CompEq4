@@ -31,7 +31,13 @@ public class canonicalLR {
         }
         return closure(g, J);
     }
-
+        public static Set<itemLR0> go(grammar g, Set<itemLR0> I, String X) {
+        Set<itemLR0> J = new LinkedHashSet<>();
+        for (itemLR0 it : I) {
+            if (X.equals(it.symbolAfterDot())) J.add(it.advance());
+        }
+        return J;
+    }
     // ---------- colección canónica----------
     public static List<Set<itemLR0>> canonicalCollection(grammar g) {
         production startProd = g.byLeft.get(g.startPrime).get(0);
@@ -85,7 +91,10 @@ public class canonicalLR {
     public static String formatReport(grammar g, List<Set<itemLR0>> C) {
         StringBuilder out = new StringBuilder();
 
-        out.append("cerradura({[").append(g.startPrime).append("→•").append("...]})\n");
+        production startProd = g.byLeft.get(g.startPrime).get(0);
+        itemLR0 startItem = new itemLR0(startProd, 0);
+
+        out.append("cerradura({").append(startItem.toString()).append("})\n");
         out.append("I0=").append(itemsAsSet(C.get(0))).append("\n\n");
 
         // Mapa de índices
@@ -106,7 +115,7 @@ public class canonicalLR {
                 if (isAccept) {
                     out.append("Aceptación");
                 } else {
-                    out.append("cerradura(").append(itemsAsSet(J)).append(")");
+                    out.append("cerradura(").append(itemsAsSet(go(g, I, X))).append(")= (").append(itemsAsSet(J)).append(")");
                     Integer j = idx.get(J);
                     if (j == null) {
                         for (int k = 0; k < C.size(); k++) if (C.get(k).equals(J)) { j = k; break; }
