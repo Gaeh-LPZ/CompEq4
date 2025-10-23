@@ -32,7 +32,7 @@ public class PrimerosSiguientesPanel extends JPanel {
         JButton btnAnalyze = new JButton("Calcular");
         JButton btnClear   = new JButton("Limpiar");
 
-        btnOpen.addActionListener(e -> {
+        btnOpen.addActionListener(_ -> {
             JFileChooser chooser = new JFileChooser();
             chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
             chooser.setFileFilter(new FileNameExtensionFilter(
@@ -45,7 +45,7 @@ public class PrimerosSiguientesPanel extends JPanel {
             }
         });
 
-        btnAnalyze.addActionListener(e -> {
+        btnAnalyze.addActionListener(_ -> {
             String grammarText = textArea.getText().trim();
             if (grammarText.isEmpty()) {
                 JOptionPane.showMessageDialog(
@@ -78,7 +78,7 @@ public class PrimerosSiguientesPanel extends JPanel {
             }
         });
 
-        btnClear.addActionListener(e -> {
+        btnClear.addActionListener(_ -> {
             filePathField.setText("");
             textArea.setText("");
         });
