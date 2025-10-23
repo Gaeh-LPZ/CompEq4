@@ -1,0 +1,11 @@
+S E L
+, + ( ) ; := id num print
+S->S ; S
+S->id := E
+S->print ( L )
+E->id
+E->num
+E->E + E
+E->( S , E )
+L->E
+L->L , E
